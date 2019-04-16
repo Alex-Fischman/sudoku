@@ -1,1 +1,121 @@
-
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            html, body {
+                width: 90%;
+                height: 90%;
+                margin: auto;
+                
+                display: inline;
+                text-align: center;
+            }
+            
+            #board, #keypad {
+                float: left;
+                height: 100%;
+            }
+            
+            #keypad table {
+                float: left;
+                height: 49%;
+                margin: 1%;
+            }
+            
+            td {
+                position: relative;
+                
+                border: 1px solid black;
+                
+                font-size: 70%;
+            }
+            
+            td div {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                
+                text-align: right;
+                font-size: 50%;
+            }
+            
+            td:nth-child(3n) {
+                border-right-width: 2px;
+            }
+            
+            td:nth-child(3n - 2) {
+                border-left-width: 2px;
+            }
+            
+            tr:nth-child(3n) td {
+                border-bottom-width: 2px;
+            }
+            
+            tr:nth-child(3n - 2) td {
+                border-bottom-width: 2px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <table id="board" cellspacing="0"></table>
+        <div id="keypad">
+            <table id="answers" cellspacing="0"></table>
+            <table id="notes" cellspacing="0"></table>
+        </div>
+        
+        <script>
+            class Table {
+                constructor(node, width, height, callback) {
+                    this.table = node;
+                    this.rows = height;
+                    this.cols = width;
+                    
+                    for (let i = 0; i < this.rows; ++i) {
+                        const tr = this.table.appendChild(document.createElement("tr"));
+                        for (let j = 0; j < this.cols; ++j) {
+                            let td = tr.appendChild(document.createElement("td"));
+                            callback(td, i, j);
+                        }
+                    }
+                }
+                
+                static loop(table, callback) {
+                    const rows = table.children.length;
+                    const cols = table.children[0].children.length;
+                    for (let i = 0; i < rows; ++i) {
+                        for (let j = 0; j < cols; ++j) {
+                            callback(td, i, j);
+                        }
+                    }
+                }
+            }
+            
+            let board = new Table(
+                document.getElementById("board"),
+                9, 9,
+                function buildBoard(td, i, j) {
+                    td.firstChild.data = 0;
+                    
+                    let div = td.appendChild(document.createElement("div"));
+                    div.firstChild.data = 0;
+                    div.addEventListener(
+                        "click",
+                        function onBoardClicked(event) {
+                            Table.loop(
+                                event.target.parentElement.parentElement.parentElement,
+                                td => (td.style.borderColor = "black", td)
+                            );
+                            
+                            event.target.parentElement.style.borderColor = "blue";
+                        }
+                    );
+                }
+            );
+            board.table.style.width = getComputedStyle(board.table).height;
+            board.table.firstChild.firstChild.firstChild.click();
+        </script>
+    </body>
+</html>
