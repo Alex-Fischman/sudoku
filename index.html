@@ -115,7 +115,9 @@
                 }
             );
             board.table.style.width = getComputedStyle(board.table).height;
-            board.table.firstChild.firstChild.firstChild.click();
+            board.table.children[0].children[0].children[0].click();
+            
+            window.alert(board);
         </script>
     </body>
 </html>
