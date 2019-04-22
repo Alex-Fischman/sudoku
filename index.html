@@ -16,8 +16,8 @@
 			}
 
 			#board {
-				width: 90%;
-				height: 90%;
+				width: 80%;
+				height: 80%;
 				margin: auto;
 				float: left;
 			}
@@ -89,16 +89,7 @@
                 }
             }
 
-			function equalizeDimensions(node) {
-				if (getComputedStyle(node).width < getComputedStyle(node).height) {
-					node.style.height = getComputedStyle(node).width;
-				}
-				else {
-					node.style.width = getComputedStyle(node).height;
-				}
-			}
-            
-            const board = new Table(
+			const board = new Table(
 				document.getElementById("board"),
 				9, 9,
 				function createBoard(td) {
@@ -117,7 +108,7 @@
 					};
 				}
 			);
-			equalizeDimensions(board.table);
+			board.table.style.width = getComputedStyle(board.table).height;
 			board.table.children[0].children[0].children[0].click();
         </script>
     </body>
