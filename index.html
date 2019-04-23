@@ -11,15 +11,9 @@
 				background-color: white;
 			}
 
-			table {
-				table-layout: fixed;
-			}
-
 			#board {
-				width: 80%;
-				height: 80%;
-				margin: auto;
-				float: left;
+				table-layout: fixed;
+				height: 90%;
 			}
 			
 			td {
@@ -63,53 +57,41 @@
 		<table id="board" cellspacing="0"></table>
 		
 		<script>
-			class Table {
-				constructor(node, width, height, callback) {
-					this.table = node;
-					this.rows = height;
-					this.cols = width;
-					
-					for (let i = 0; i < this.rows; ++i) {
-						const tr = this.table.appendChild(document.createElement("tr"));
-						for (let j = 0; j < this.cols; ++j) {
-							let td = tr.appendChild(document.createElement("td"));
-							callback(td, i, j);
+			const SELECTED = "blue";
+			const UNSELECTED = "black";
+			const board = document.getElementById("board");
+
+			function getSelectedCell() {
+				for (const tr of board.children) {
+					for (const td of tr.children) {
+						if (td.style.borderColor === SELECTED) {
+							return td;
 						}
 					}
 				}
-				
-				static loop(table, callback) {
-					const rows = table.children.length;
-					const cols = table.children[0].children.length;
-					for (let i = 0; i < rows; ++i) {
-						for (let j = 0; j < cols; ++j) {
-							callback(table.children[i].children[j], i, j);
-						}
-					}
-				}
+				return document.createElement("td");
 			}
 
-			const board = new Table(
-				document.getElementById("board"),
-				9, 9,
-				function createBoard(td) {
-					const div = document.createElement("div");
-					td.appendChild(div);
-					div.onclick = function selectCell(event) {
-						event.preventDefault();
-						const board = td.parentElement.parentElement;
-						Table.loop(
-							board,
-							function removeHighlight(td) {
-								td.style.borderColor = "black";
-							}
-						);
-						td.borderColor = "blue";
-					};
+			function selectCell(event) {
+				event.preventDefault();
+				const cell = event.target.parentElement;
+				const board = cell.parentElement.parentElement;
+				getSelectedCell().style.borderColor = UNSELECTED;
+				cell.style.borderColor = SELECTED;
+			}
+			
+			for (let i = 0; i < 9; ++i) {
+				const row = board.appendChild(document.createElement("tr"));
+				for (let j = 0; j < 9; ++j) {
+					const cell = row.appendChild(document.createElement("td"));
+					cell.style.borderColor = UNSELECTED
+					const div = cell.appendChild(document.createElement("div"));
+					div.onclick = selectCell;
 				}
-			);
-			board.table.style.width = getComputedStyle(board.table).height;
-			board.table.children[0].children[0].children[0].click();
+			}
+			
+			board.style.width = getComputedStyle(board).height;
+			board.children[0].children[0].children[0].click();
 		</script>
 	</body>
 </html>
